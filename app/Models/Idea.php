@@ -22,7 +22,7 @@ class Idea extends Model
     ];
 
     protected $attributes = [
-        'status' => IdeaStatus::PENDING
+        'status' => IdeaStatus::PENDING->value
     ];
 
     // An idea belongs to a user
