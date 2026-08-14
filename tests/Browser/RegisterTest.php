@@ -12,10 +12,9 @@ test('it registers a user', function () {
 
     expect(Auth::user())->toMatchArray([
         'name' => 'Jane Doe',
-        'email' => 'janedoe@example.net'
+        'email' => 'janedoe@example.net',
     ]);
 });
-
 
 test('it requires a valid email address', function () {
     visit('/register')

@@ -18,7 +18,6 @@ it('logs in a user', function () {
     $this->assertAuthenticated();
 });
 
-
 it('logs out a user', function () {
 
     // Arrange

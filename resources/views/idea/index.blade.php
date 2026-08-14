@@ -7,6 +7,18 @@
             </p>
         </header>
 
+        <div>
+            <a href="/ideas" class="btn {{ $status === null ? '' : 'btn-outlined' }}">All <span class="text-xs pl-3">{{ $statusCounts->get('all') }}</span></a>
+            @foreach (App\IdeaStatus::cases() as $ideaStatus)
+                <a
+                    href="/ideas?status={{ $ideaStatus->value }}"
+                    class="btn {{ $status === $ideaStatus->value ? '' : 'btn-outlined' }}"
+                >
+                    {{ $ideaStatus->label() }} <span class="text-xs pl-3">{{ $statusCounts->get($ideaStatus->value) }}</span>
+                </a>
+            @endforeach
+        </div>
+
         <div class="mt-10 text-muted-foreground">
             <div class="grid md:grid-cols-2 gap-6">
                 @forelse ($ideas as $idea)

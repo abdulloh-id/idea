@@ -3,6 +3,16 @@
 use App\Models\Idea;
 use App\Models\User;
 
+test('it passes the normalized status to the ideas index view', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $response = $this->get('/ideas?status=not-real');
+
+    $response->assertOk()
+        ->assertViewHas('status', null);
+});
+
 test('it belongs to a user', function () {
     $idea = Idea::factory()->create();
 

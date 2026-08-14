@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Idea;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -37,7 +36,7 @@ class User extends Authenticatable
     }
 
     // A user can have many ideas
-    public function ideas() : HasMany
+    public function ideas(): HasMany
     {
         // Return what? Return many ideas
         return $this->hasMany(Idea::class);
