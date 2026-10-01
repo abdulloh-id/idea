@@ -5,16 +5,26 @@
             <p class="text-muted-foreground text-sm mt-2">
                 Capture your thoughts
             </p>
+
+            <x-card
+                x-data
+                @click="$dispatch('open-modal', 'create-idea')"
+                is="button"
+                type="button"
+                class="mt-10 cursor-pointer h-32 w-full text-left"
+            >
+                <p>What's the idea?</p>
+            </x-card>
         </header>
 
         <div>
-            <a href="/ideas" class="btn {{ $status === null ? '' : 'btn-outlined' }}">All <span class="text-xs pl-3">{{ $statusCounts->get('all') }}</span></a>
+            <a href="/ideas" class="btn {{ $status === null ? '' : 'btn-outlined' }}">All <span
+                    class="text-xs pl-3">{{ $statusCounts->get('all') }}</span></a>
             @foreach (App\IdeaStatus::cases() as $ideaStatus)
-                <a
-                    href="/ideas?status={{ $ideaStatus->value }}"
-                    class="btn {{ $status === $ideaStatus->value ? '' : 'btn-outlined' }}"
-                >
-                    {{ $ideaStatus->label() }} <span class="text-xs pl-3">{{ $statusCounts->get($ideaStatus->value) }}</span>
+                <a href="/ideas?status={{ $ideaStatus->value }}"
+                    class="btn {{ $status === $ideaStatus->value ? '' : 'btn-outlined' }}">
+                    {{ $ideaStatus->label() }} <span
+                        class="text-xs pl-3">{{ $statusCounts->get($ideaStatus->value) }}</span>
                 </a>
             @endforeach
         </div>
@@ -41,5 +51,9 @@
                 @endforelse
             </div>
         </div>
+
+        <x-modal name="create-idea" title="New Idea">
+            <p>Slot content</p>
+        </x-modal>
     </div>
 </x-layout>
