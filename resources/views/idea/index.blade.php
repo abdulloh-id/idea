@@ -11,6 +11,7 @@
                 @click="$dispatch('open-modal', 'create-idea')"
                 is="button"
                 type="button"
+                data-test="create-idea-button"
                 class="mt-10 cursor-pointer h-32 w-full text-left"
             >
                 <p>What's the idea?</p>
@@ -74,10 +75,11 @@
                                 type="button"
                                 @click="status = @js($status->value)"
                                 class="btn flex-1 h-10"
+                                data-test="button-status-{{ $status->value }}"
                                 :class="{'btn-outlined': status !== @js($status->value)}"
                             >{{ $status->label() }}</button>
                             @endforeach
-                            
+
                             <input type="hidden" name="status" :value="status">
                         </div>
 
@@ -99,7 +101,7 @@
                     class="btn btn-outlined"
                     @click="$dispatch('close-modal')"
                     >Cancel</button>
-                    <button type="submit" class="btn">Create</button>
+                    <button type="submit" class="btn" data-test="submit-idea-button">Create</button>
                 </div>
             </form>
         </x-modal>
