@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Step;
 
 class StepController extends Controller
@@ -11,6 +12,7 @@ class StepController extends Controller
     {
         // auth
         $step->update(['completed' => ! $step->completed]);
+
         return back();
     }
 }
