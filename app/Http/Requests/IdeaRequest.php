@@ -8,7 +8,7 @@ use App\IdeaStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreIdeaRequest extends FormRequest
+class IdeaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
