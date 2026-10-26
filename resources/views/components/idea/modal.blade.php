@@ -6,15 +6,25 @@
 >
     <form
         x-data="{
-            status: @js(old('status', $idea->status->value)),
-            links: @js(old('links', $idea->links)),
+            status: @js(old('status', $idea->exists ? $idea->status->value : 'pending')),
+            links: @js(old('links', $idea->links ?? [])),
             newLink: '',
-            steps: @js(old('steps', $idea->steps->map(fn ($step) => $step->description))),
+            steps: @js(
+                old('steps',
+                    $idea->exists
+                        ? $idea->steps->map(fn ($step) => [
+                            'description' => $step->description,
+                            'completed' => (bool) $step->completed
+                          ])->toArray()
+                        : []
+                )
+            ),
             newStep: ''
         }"
         method="POST"
         action="{{ $idea->exists ? route('idea.update', $idea) : route('idea.store') }}"
-        enctype="multipart/form-data"
+        {{-- Pest's browser server doesn't parse multipart bodies, so fall back to urlencoded in tests --}}
+        enctype="{{ app()->runningUnitTests() ? 'application/x-www-form-urlencoded' : 'multipart/form-data' }}"
     >
         @csrf
 
@@ -82,9 +92,10 @@
                 <fieldset class="space-y-3">
                     <legend class="label">Actionable Steps</legend>
 
-                    <template x-for="(step, index) in steps">
+                    <template x-for="(step, index) in steps" :key="step.id || index">
                         <div class="flex gap-x-2 items-center">
-                            <input name="steps[]" x-model="step" class="input">
+                            <input :name="`steps[${index}][description]`" x-model="step.description" class="input">
+                            <input type="hidden" :name="`steps[${index}][completed]`" :value="step.completed ? '1' : '0'">
 
                             <button
                                 type="button"
@@ -109,7 +120,10 @@
                     >
                     <button
                         type="button"
-                        @click="steps.push(newStep.trim()); newStep = ''"
+                        @click="
+                            steps.push({ description: newStep.trim(), completed: false });
+                            newStep = ''
+                        "
                         :disabled="newStep.trim().length === 0"
                         aria-label="Add a new step"
                         data-test="submit-new-step-button"
@@ -126,7 +140,8 @@
 
                     <template x-for="(link, index) in links">
                         <div class="flex gap-x-2 items-center">
-                            <input name="links[]" x-model="link" class="input">
+                            <!-- Change name="links[]" to indexed name -->
+                            <input :name="`links[${index}]`" x-model="link" class="input">
 
                             <button
                                 type="button"

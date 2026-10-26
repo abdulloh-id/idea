@@ -10,26 +10,31 @@ use Illuminate\Support\Facades\DB;
 
 class CreateIdea
 {
-    public function __construct(#[CurrentUser()] protected User $user)
+    public function __construct(#[CurrentUser] protected User $user)
     {
         //
     }
 
     public function handle(array $attributes): void
     {
-
-        $data = collect($attributes)->only([
-            'title', 'description', 'status', 'links',
-        ])->toArray();
+        $data = collect($attributes)
+            ->only(['title', 'description', 'status', 'links'])
+            ->toArray();
 
         if ($attributes['image'] ?? false) {
-            $data['image_path'] = $attributes['image']->store('ideas', 'public');
+            $data['image_path'] = $attributes['image']->store(
+                'ideas',
+                'public',
+            );
         }
 
         DB::transaction(function () use ($data, $attributes) {
             $idea = $this->user->ideas()->create($data);
 
-            $steps = collect($attributes['steps'] ?? [])->map(fn ($step) => ['description' => $step]);
+            $steps = collect($attributes['steps'] ?? [])->map(fn ($step) => [
+                'description' => $step['description'],
+                'completed' => $step['completed'] ?? false,
+            ]);
 
             $idea->steps()->createMany($steps);
         });
