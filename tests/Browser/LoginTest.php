@@ -7,7 +7,7 @@ it('logs in a user', function () {
     // Arrange
     User::factory()->create([
         'email' => 'janedoe@example.net',
-        'password' => 'password123'
+        'password' => 'password123',
     ]);
 
     // Act
