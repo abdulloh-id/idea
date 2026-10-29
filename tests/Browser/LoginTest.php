@@ -5,14 +5,17 @@ use App\Models\User;
 it('logs in a user', function () {
 
     // Arrange
-    User::factory()->create(['password' => 'password123']);
+    User::factory()->create([
+        'email' => 'janedoe@example.net',
+        'password' => 'password123'
+    ]);
 
     // Act
     visit('/login')
         ->fill('email', 'janedoe@example.net')
         ->fill('password', 'password123')
         ->click('@login-button')
-        ->assertPathIs('/');
+        ->assertRoute('idea.index');
 
     // Assert
     $this->assertAuthenticated();
