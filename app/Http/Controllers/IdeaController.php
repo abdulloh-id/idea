@@ -28,7 +28,7 @@ class IdeaController extends Controller
         // Give me all ideas of the user
         $ideas = $user
             ->ideas()
-            ->when(in_array($status, IdeaStatus::values()), fn ($query, $status) => $query->where('status', $status))
+            ->when(in_array($status, IdeaStatus::values()), fn ($query) => $query->where('status', $status))
             ->latest()
             ->get();
 

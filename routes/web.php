@@ -1,68 +1,47 @@
 <?php
 
-declare(strict_types=1);
-
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\IdeaImageController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StepController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
-use App\Http\Controllers\StepController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
 Route::redirect('/', '/ideas');
 
-Route::get('/ideas', [IdeaController::class, 'index'])
-    ->name('idea.index')
-    ->middleware('auth');
-Route::post('/ideas', [IdeaController::class, 'store'])
-    ->name('idea.store')
-    ->middleware('auth');
+// Guest routes
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [RegisteredUserController::class, 'create']);
+    Route::post('/register', [RegisteredUserController::class, 'store']);
 
-Route::get('/ideas/{idea}', [IdeaController::class, 'show'])
-    ->name('idea.show')
-    ->middleware('auth');
+    Route::get('/login', [SessionsController::class, 'create'])->name('login');
+    Route::post('/login', [SessionsController::class, 'store']);
+});
 
-Route::patch('/ideas/{idea}', [IdeaController::class, 'update'])
-    ->name('idea.update')
-    ->middleware('auth');
+// Authenticated routes
+Route::middleware('auth')->group(function () {
 
-Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])
-    ->name('idea.destroy')
-    ->middleware('auth');
+    Route::post('/logout', [SessionsController::class, 'destroy']);
 
-Route::delete('/ideas/{idea}/image', [IdeaImageController::class, 'destroy'])
-    ->name('idea.image.destroy')
-    ->middleware('auth');
+    // Idea CRUD Routes
+    Route::controller(IdeaController::class)->group(function () {
+        Route::get('/ideas', 'index')->name('idea.index');
+        Route::post('/ideas', 'store')->name('idea.store');
+        Route::get('/ideas/{idea}', 'show')->name('idea.show');
+        Route::patch('/ideas/{idea}', 'update')->name('idea.update');
+        Route::delete('/ideas/{idea}', 'destroy')->name('idea.destroy');
+    });
 
-Route::patch('/steps/{step}', [StepController::class, 'update'])
-    ->name('step.update')
-    ->middleware('auth');
+    Route::delete('/ideas/{idea}/image', [IdeaImageController::class, 'destroy'])
+        ->name('idea.image.destroy');
 
-Route::get('/register', [
-    RegisteredUserController::class,
-    'create',
-])->middleware('guest');
-Route::post('/register', [
-    RegisteredUserController::class,
-    'store',
-])->middleware('guest');
+    Route::patch('/steps/{step}', [StepController::class, 'update'])
+        ->name('step.update');
 
-Route::get('/login', [SessionsController::class, 'create'])
-    ->name('login')
-    ->middleware('guest');
-Route::post('/login', [SessionsController::class, 'store'])->middleware(
-    'guest',
-);
-
-Route::post('/logout', [SessionsController::class, 'destroy'])->middleware(
-    'auth',
-);
-
-Route::get('/profile', [ProfileController::class, 'edit'])
-    ->name('profile.edit')
-    ->middleware('auth');
-
-Route::patch('/profile', [ProfileController::class, 'update'])
-    ->name('profile.update')
-    ->middleware('auth');
+    // Profile Management
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+    });
+});
