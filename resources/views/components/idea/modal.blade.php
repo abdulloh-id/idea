@@ -23,7 +23,6 @@
         }"
         method="POST"
         action="{{ $idea->exists ? route('idea.update', $idea) : route('idea.store') }}"
-        {{-- Pest's browser server doesn't parse multipart bodies, so fall back to urlencoded in tests --}}
         enctype="{{ app()->runningUnitTests() ? 'application/x-www-form-urlencoded' : 'multipart/form-data' }}"
     >
         @csrf
@@ -88,13 +87,14 @@
                 :value="$idea->description"
             />
 
-            <div>
-                <fieldset class="space-y-3">
-                    <legend class="label">Actionable Steps</legend>
+            <!-- Actionable Steps Section -->
+            <div class="space-y-3">
+                <label class="label">Actionable Steps</label>
 
+                <div class="space-y-2">
                     <template x-for="(step, index) in steps" :key="step.id || index">
                         <div class="flex gap-x-2 items-center">
-                            <input :name="`steps[${index}][description]`" x-model="step.description" class="input">
+                            <input :name="`steps[${index}][description]`" x-model="step.description" class="input flex-1">
                             <input type="hidden" :name="`steps[${index}][completed]`" :value="step.completed ? '1' : '0'">
 
                             <button
@@ -107,7 +107,7 @@
                             </button>
                         </div>
                     </template>
-                </fieldset>
+                </div>
 
                 <div class="flex gap-x-2 items-center">
                     <input
@@ -134,14 +134,14 @@
                 </div>
             </div>
 
-            <div>
-                <fieldset class="space-y-3">
-                    <legend class="label">Links</legend>
+            <!-- Links Section -->
+            <div class="space-y-3">
+                <label class="label">Links</label>
 
-                    <template x-for="(link, index) in links">
+                <div class="space-y-2">
+                    <template x-for="(link, index) in links" :key="index">
                         <div class="flex gap-x-2 items-center">
-                            <!-- Change name="links[]" to indexed name -->
-                            <input :name="`links[${index}]`" x-model="link" class="input">
+                            <input :name="`links[${index}]`" x-model="links[index]" class="input flex-1">
 
                             <button
                                 type="button"
@@ -153,7 +153,7 @@
                             </button>
                         </div>
                     </template>
-                </fieldset>
+                </div>
 
                 <div class="flex gap-x-2 items-center">
                     <input
@@ -180,7 +180,7 @@
             </div>
         </div>
 
-        <div class="flex justify-end gap-x-3 mt-2">
+        <div class="flex justify-end gap-x-3 mt-6">
             <button
             type="button"
             class="btn btn-outlined"

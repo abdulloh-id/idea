@@ -1,4 +1,4 @@
-<nav class="border-b border-border px-6">
+<header class="border-b border-border px-6 w-full">
     <div class="max-w-7xl mx-auto h-16 flex items-center justify-between">
         <div>
             <a href='/'>
@@ -23,4 +23,4 @@
 
         </div>
     </div>
-</nav>
+</header>

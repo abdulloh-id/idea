@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+declare(strict_types=1);
+
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\IdeaImageController;
-use App\Http\Controllers\StepController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StepController;
+use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/ideas');
 

@@ -1,8 +1,9 @@
 <x-layout>
     <div class="py-8 max-w-4xl mx-auto">
 
+        <!-- Top Actions / Back Navigation -->
         <div class="flex justify-between items-center">
-            <a href="{{ route('idea.index') }}" class="flex items-center gap-x-2 text-sm font-medium">
+            <a href="{{ route('idea.index') }}" class="flex items-center gap-x-2 text-sm font-medium text-muted-foreground hover:text-foreground transition">
                 <x-icons.arrow-back />
                 Back to Ideas
             </a>
@@ -25,70 +26,78 @@
             </div>
         </div>
 
-        <div class="mt-8 space-y-6">
+        <!-- Main Content Area -->
+        <div class="mt-8 space-y-8">
+
+            <!-- Featured Image -->
             @if ($idea->image_path)
-                <div class="rounded-lg overflow-hidden">
-                    <img src="{{ asset('storage/' . $idea->image_path) }}" alt="" class="w-full h-auto object-cover">
+                <div class="rounded-lg overflow-hidden shadow-sm">
+                    <img src="{{ asset('storage/' . $idea->image_path) }}" alt="" class="w-full h-auto object-cover max-h-[480px]">
                 </div>
             @endif
 
-            <h1 class="font-bold text-4xl">{{ $idea->title }}</h1>
+            <!-- Title and Meta Info -->
+            <div>
+                <h1 class="font-bold text-3xl md:text-4xl tracking-tight">{{ $idea->title }}</h1>
 
-            <div class="mt-2 flex gap-x-3 items-center">
-                <x-idea.status-label :status="$idea->status->value">
-                    {{ $idea->status->label() }}
-                </x-idea.status-label>
+                <div class="mt-3 flex gap-x-3 items-center">
+                    <x-idea.status-label :status="$idea->status->value">
+                        {{ $idea->status->label() }}
+                    </x-idea.status-label>
 
-                <div class="text-muted-foreground text-sm">
-                    {{ $idea->created_at->diffForHumans() }}
+                    <div class="text-muted-foreground text-sm">
+                        {{ $idea->created_at->diffForHumans() }}
+                    </div>
                 </div>
             </div>
 
-            <div>
-                @if ($idea->description)
-                    <x-card class="mt-6" is="div">
-                        <div class="text-foreground prose prose-invert max-w-none cursor-pointer">
-                            {!! $idea->formattedDescription !!}
-                        </div>
-                    </x-card>
-                @endif
-
-                @if ($idea->steps->count())
-                    <div>
-                        <h3 class="font-bold text-xl mt-6">Actionable Steps</h3>
-
-                        <div class="mt-3 space-y-2">
-                            @foreach ($idea->steps as $step)
-                                <x-card is="div">
-                                    <form method="POST" action="{{ route('step.update', $step) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="flex items-center gap-x-3">
-                                            <button type="submit" role="checkbox" class="size-5 flex items-center justify-center rounded-lg text-primary-foreground {{ $step->completed ? 'bg-primary' : 'border border-primary' }}">&check;</button>
-                                            <span class="{{ $step->completed ? 'line-through text-muted-foreground' : '' }}">{{ $step->description }}</span>
-                                        </div>
-                                    </form>
-                                </x-card>
-                            @endforeach
-                        </div>
+            <!-- Description Card -->
+            @if ($idea->description)
+                <x-card is="div">
+                    <div class="text-foreground prose prose-invert max-w-none">
+                        {!! $idea->formattedDescription !!}
                     </div>
-                @endif
+                </x-card>
+            @endif
 
-                @if ($idea->links->count())
-                    <div>
-                        <h3 class="font-bold text-xl mt-6">Links</h3>
+            <!-- Actionable Steps -->
+            @if ($idea->steps->count())
+                <div class="space-y-3">
+                    <h3 class="font-bold text-xl tracking-tight">Actionable Steps</h3>
 
-                        <div class="mt-3 space-y-2">
-                            @foreach ($idea->links as $link)
-                                <x-card :href="$link" class="text-primary font-medium flex gap-x-3 items-center">
-                                    <x-icons.external />
-                                    {{ $link }}
-                                </x-card>
-                            @endforeach
-                        </div>
+                    <div class="space-y-2">
+                        @foreach ($idea->steps as $step)
+                            <x-card is="div">
+                                <form method="POST" action="{{ route('step.update', $step) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <div class="flex items-center gap-x-3">
+                                        <button type="submit" role="checkbox" class="size-5 flex items-center justify-center rounded-lg text-primary-foreground transition {{ $step->completed ? 'bg-primary' : 'border border-primary' }}">&check;</button>
+                                        <span class="{{ $step->completed ? 'line-through text-muted-foreground' : 'text-foreground' }}">{{ $step->description }}</span>
+                                    </div>
+                                </form>
+                            </x-card>
+                        @endforeach
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
+
+            <!-- Related Links -->
+            @if ($idea->links->count())
+                <div class="space-y-3">
+                    <h3 class="font-bold text-xl tracking-tight">Links</h3>
+
+                    <div class="space-y-2">
+                        @foreach ($idea->links as $link)
+                            <x-card :href="$link" class="text-primary font-medium flex gap-x-3 items-center hover:underline">
+                                <x-icons.external />
+                                {{ $link }}
+                            </x-card>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
         </div>
 
         <x-idea.modal :idea="$idea" />

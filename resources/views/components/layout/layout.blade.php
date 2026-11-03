@@ -10,12 +10,15 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-background text-foreground">
-    <x-layout.nav />
+<body class="bg-background text-foreground min-h-screen flex flex-col">
 
-    <main class="max-w-7xl mx-auto px-6">
+    <x-layout.header />
+
+    <main class="max-w-7xl mx-auto px-6 py-8 grow w-full">
         {{ $slot }}
     </main>
+
+    <x-layout.footer />
 
     @session('success')
         <div
@@ -24,7 +27,7 @@
             x-show="show"
             x-transition.opacity.duration.300ms
             role="alert"
-            class="bg-primary px-4 py-3 fixed bottom-4 right-4 rounded-lg"
+            class="bg-primary px-4 py-3 fixed bottom-4 right-4 rounded-lg shadow-lg"
             >
             {{ $value }}
         </div>
